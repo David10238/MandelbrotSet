@@ -1,5 +1,6 @@
 package mandelbrot;
 
+import javax.xml.stream.Location;
 import java.util.ArrayList;
 
 public class AntialiasingWorker implements Worker<PixelColor> {
@@ -24,25 +25,22 @@ public class AntialiasingWorker implements Worker<PixelColor> {
     }
 
     private PixelColor calculatePixel(PixelLocation location) {
-        // find pixels in a 4x4 area
-        ArrayList<Integer> pixels = new ArrayList<>();
-        pixels.add(location.n);
-        if (location.x + 1 < Configuration.WIDTH) {
-            pixels.add(PixelLocation.toLocation(location.x + 1, location.y));
-        }
-        if (location.y + 1 < Configuration.HEIGHT) {
-            pixels.add(PixelLocation.toLocation(location.x, location.y + 1));
-        }
-        if (location.x + 1 < Configuration.WIDTH && location.y + 1 < Configuration.HEIGHT) {
-            pixels.add(PixelLocation.toLocation(location.x + 1, location.y + 1));
+        // provide double weight to actual pixel
+        int count = 1;
+        int sum = input[location.n].brightness;
+
+        // average a 3x3 area
+        for (int x = location.x - 1; x <= location.x + 1; x++) {
+            for (int y = location.y - 1; y <= location.y + 1; y++) {
+                // keep within bounds
+                if (PixelLocation.exists(x, y)) {
+                    int n = PixelLocation.toLocation(x, y);
+                    sum += input[n].brightness;
+                    count++;
+                }
+            }
         }
 
-        // calculate the average
-        int sum = 0;
-        for (int i : pixels) {
-            sum += input[i].brightness;
-        }
-
-        return new PixelColor(sum / pixels.size());
+        return new PixelColor(sum / count);
     }
 }
