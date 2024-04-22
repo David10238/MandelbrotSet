@@ -8,7 +8,7 @@ public class Main {
 
 
         PixelColor[] pixels = Manager.calculateSet();
-        //pixels = Manager.calculateAntialiasing(pixels);
+        pixels = Manager.calculateAntialiasing(pixels);
         Graphics.drawPixels(pixels);
     }
 }

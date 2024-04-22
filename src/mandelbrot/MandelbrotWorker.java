@@ -35,11 +35,13 @@ public class MandelbrotWorker implements Worker<PixelColor> {
             if (Math.hypot(newRe, newIm) > 2) break;
         }
 
+        // calculate the brightness
         double z = Math.hypot(newRe, newIm);
         double brightness = 256 * log2(1.75 + i - log2(log2(z))) / log2(MAX_ITERATIONS);
         return new PixelColor((int) brightness);
     }
 
+    // Java math functions don't allow custom bases
     private double log2(double n) {
         return Math.log(n) / Math.log(2);
     }
